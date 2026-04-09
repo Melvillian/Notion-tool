@@ -1,0 +1,10 @@
+{
+  "name": "notion-tool",
+  "version": "0.0.1",
+  "private": true,
+  "workspaces": ["apps/*"],
+  "scripts": {
+    "srs-review": "bun run apps/srs-review/src/index.ts",
+    "plausibility-checker": "bun run apps/plausibility-checker/src/index.ts"
+  }
+}
