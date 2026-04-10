@@ -5,12 +5,27 @@ import type { BlockObjectResponse } from '@notionhq/client/build/src/api-endpoin
 const CARD_ID_REGEX = /\[id:([a-f0-9-]+)\]/;
 
 export class ReviewPage {
+  private renderLock: Promise<void> = Promise.resolve();
+
   constructor(
     private notion: NotionClient,
     private pageId: string,
   ) {}
 
   async render(dueCards: SRSCard[]): Promise<void> {
+    // Serialize concurrent render calls to avoid archived-block conflicts
+    const prev = this.renderLock;
+    let resolve: () => void;
+    this.renderLock = new Promise<void>(r => { resolve = r; });
+    await prev;
+    try {
+      await this._render(dueCards);
+    } finally {
+      resolve!();
+    }
+  }
+
+  private async _render(dueCards: SRSCard[]): Promise<void> {
     console.log(`Rendering review page with ${dueCards.length} due cards...`);
     await this.notion.deleteAllPageChildren(this.pageId);
 

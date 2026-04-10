@@ -184,6 +184,7 @@ export class NotionClient {
         this.client.blocks.children.list({ block_id: pageId, start_cursor: cursor, page_size: 100 })
       );
       for (const block of response.results) {
+        if ('archived' in block && block.archived) continue;
         await this.callWithRetry(() =>
           this.client.blocks.delete({ block_id: block.id })
         );

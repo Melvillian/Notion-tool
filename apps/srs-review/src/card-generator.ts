@@ -23,6 +23,7 @@ export class CardGenerator {
                 answer: { type: 'string' },
               },
               required: ['question', 'answer'],
+              additionalProperties: false,
             },
           },
         },
